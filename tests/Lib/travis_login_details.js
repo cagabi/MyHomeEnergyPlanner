@@ -4,8 +4,8 @@
  *************************************************************/
 
 module.exports = {
-    login_url: 'http://127.0.0.1/emoncms/',
-    username1: 'admin', // same user than the one that travis uses when creating the emonCMS admin
+    login_url: 'http://127.0.0.1/',
+    username1: 'admin', // admin user in a travis built
     password1: 'admin',
     username2: 'user',
     password2: 'user'
