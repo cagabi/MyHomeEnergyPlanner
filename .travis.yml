@@ -67,7 +67,7 @@ install:
     
     # Install MHEP
     - cd /var/www/html/emoncms/Modules
-    - git clone --depth=3 --branch=$TRAVIS_BRANCH https://github.com/$TRAVIS_REPO_SLUG assessment
+    - cp -r $TRAVIS_BUILD_DIR assessment
     - cd assessment
     - git submodule update --init --recursive
     ## Add MHEP settings to settings.php - Do not reuse the key below in a productionn site!!!!
