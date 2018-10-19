@@ -1,6 +1,7 @@
-language: node_js
-node_js:
-    - '8'
+language: php
+php:
+    - '5.6'
+    - '7.2'
 dist: trusty
 sudo: required
 services:
@@ -9,27 +10,34 @@ addons:
   chrome: stable
   firefox: latest
 env:
+    - BROWSER="chrome"
+    - BROWSER="firefox"
+env:
     - EMONCMS_REPO="https://github.com/emoncms/emoncms.git" EMONCMS_BRANCH="stable"
 before_install:
     # Install Apache + PHP - adapted from https://docs.travis-ci.com/user/languages/php/
     - sudo apt-get update
     - sudo apt-get install apache2 libapache2-mod-fastcgi -y
     ## enable php-fpm
-    - sudo cp ~/.phpenv/versions/5.6/etc/php-fpm.conf.default ~/.phpenv/versions/5.6/etc/php-fpm.conf
+    - sudo cp ~/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/php-fpm.conf.default ~/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/php-fpm.conf
     - sudo a2enmod rewrite actions fastcgi alias
-    - echo "cgi.fix_pathinfo = 1" >> ~/.phpenv/versions/5.6/etc/php.ini
+    - echo "cgi.fix_pathinfo = 1" >> ~/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/php.ini
     - sudo sed -i -e "s,www-data,travis,g" /etc/apache2/envvars
     - sudo chown -R travis:travis /var/lib/apache2/fastcgi
-    - "~/.phpenv/versions/5.6/sbin/php-fpm"
-    ## configure apache virtual hosts
+    - ~/.phpenv/versions/$TRAVIS_PHP_VERSION/sbin/php-fpm
+    ## configure apache virtual hosts 
     - sudo cp -f travis-CI/travis-ci-apache /etc/apache2/sites-available/000-default.conf
+    - sudo sed -e "s?%TRAVIS_BUILD_DIR%?$(pwd)?g" --in-place /etc/apache2/sites-available/000-default.conf
     - sudo service apache2 restart
        
 install:
     # Install emonCMS - adapted from https://github.com/emoncms/emoncms/blob/master/docs/LinuxInstall.md
     ## Setup apache
-    - sudo apt-get install php-pear build-essential php5-dev g++ wget -y
+    - sudo apt-add-repository ppa:ondrej/php -y
+    - sudo apt-get update
+    - sudo apt-get install php-pear php$TRAVIS_PHP_VERSION-dev redis-server build-essential g++ wget -y 
     - sudo pear channel-discover pear.swiftmailer.org
+    - sudo pecl install swift/swift 
     - sudo cp ./travis-CI/emoncms.conf /etc/apache2/sites-available/emoncms.conf
     - sudo a2ensite emoncms
     - sudo service apache2 reload
@@ -90,6 +98,6 @@ script:
     #- curl -vL http://127.0.0.1/emoncms
     - cd /var/www/html/emoncms/Modules/assessment/tests
     # Create emonCMS admin user and run basic test
-    - HEADLESS=true ./node_modules/.bin/wdio wdio.conf.js --spec travis_specs/emonCMS-setup.js
+    - HEADLESS=true BROWSER=$BROWSER ./node_modules/.bin/wdio wdio.conf.js --spec travis_specs/emonCMS-setup.js
     # Run MHEP tests
-    - HEADLESS=true DEBUG=true TRAVIS=true ./node_modules/.bin/wdio wdio.conf.js
+    - HEADLESS=true BROWSER=$BROWSER DEBUG=true TRAVIS=true ./node_modules/.bin/wdio wdio.conf.js
