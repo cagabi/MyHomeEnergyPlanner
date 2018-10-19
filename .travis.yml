@@ -96,6 +96,6 @@ script:
     #- curl -vL http://127.0.0.1/emoncms
     - cd /var/www/html/emoncms/Modules/assessment/tests
     # Create emonCMS admin user and run basic test
-    - HEADLESS=true BROWSER=$BROWSER ./node_modules/.bin/wdio wdio.conf.js --spec travis_specs/emonCMS-setup.js
+    - HEADLESS=true BROWSER=$BROWSER DEBUG=true TRAVIS=true ./node_modules/.bin/wdio wdio.conf.js --spec travis_specs/emonCMS-setup.js
     # Run MHEP tests
     - HEADLESS=true BROWSER=$BROWSER DEBUG=true TRAVIS=true ./node_modules/.bin/wdio wdio.conf.js
