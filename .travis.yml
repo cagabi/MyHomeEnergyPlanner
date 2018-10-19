@@ -10,10 +10,8 @@ addons:
   chrome: stable
   firefox: latest
 env:
-    - BROWSER="chrome"
-    - BROWSER="firefox"
-env:
-    - EMONCMS_REPO="https://github.com/emoncms/emoncms.git" EMONCMS_BRANCH="stable"
+    - BROWSER="chrome" EMONCMS_REPO="https://github.com/emoncms/emoncms.git" EMONCMS_BRANCH="stable"
+    - BROWSER="firefox" EMONCMS_REPO="https://github.com/emoncms/emoncms.git" EMONCMS_BRANCH="stable"
 before_install:
     # Install Apache + PHP - adapted from https://docs.travis-ci.com/user/languages/php/
     - sudo apt-get update
