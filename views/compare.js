@@ -991,7 +991,7 @@ function measureForSummaryTable(measure) {
     html += '<td>' + measure.benefits + '</td>';
 
     // Cost
-    html += '<td class="cost">£' + Number(measure.cost).toFixed(0) + '</td>';
+    html += '<td class="cost">£' + (1.0 * measure.cost_total).toFixed(2) + '</td>';
 
     // Who by
     html += '<td>' + measure.who_by + '</td>';
@@ -1110,7 +1110,7 @@ function measureForCompleteTable(measure) {
     if (measure.performance == undefined)
         var perf = '';
     else
-        format_performance_string(measure.performance); // We have realized that some units were inputted wrong in the library
+        perf = format_performance_string(measure.performance); // We have realized that some units were inputted wrong in the library
     html += '<tr><td><strong>Performance target: </strong></td><td style="width:35%">' + perf + '</td>';
     html += '<td colspan=2><table  style="width:100%">';
     html += measure.min_cost == undefined ? '' : '<tr><td><strong>Minimum cost</strong></td><td colspan=3>' + measure.min_cost + '</td></tr>';
